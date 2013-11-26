@@ -24,7 +24,13 @@
 			<thead>
 					<tr>
 					
-						<g:sortableColumn property="descricao" title="${message(code: 'task.descricao.label', default: 'Descricao')}" />
+						<g:sortableColumn property="name" title="${message(code: 'task.name.label', default: 'Name')}" />
+					
+						<g:sortableColumn property="priority" title="${message(code: 'task.priority.label', default: 'Priority')}" />
+					
+						<g:sortableColumn property="status" title="${message(code: 'task.status.label', default: 'Status')}" />
+					
+						<g:sortableColumn property="description" title="${message(code: 'task.description.label', default: 'Description')}" />
 					
 					</tr>
 				</thead>
@@ -32,7 +38,13 @@
 				<g:each in="${taskInstanceList}" status="i" var="taskInstance">
 					<tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 					
-						<td><g:link action="show" id="${taskInstance.id}">${fieldValue(bean: taskInstance, field: "descricao")}</g:link></td>
+						<td><g:link action="show" id="${taskInstance.id}">${fieldValue(bean: taskInstance, field: "name")}</g:link></td>
+					
+						<td>${fieldValue(bean: taskInstance, field: "priority")}</td>
+					
+						<td>${fieldValue(bean: taskInstance, field: "status")}</td>
+					
+						<td>${fieldValue(bean: taskInstance, field: "description")}</td>
 					
 					</tr>
 				</g:each>

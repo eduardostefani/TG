@@ -7,7 +7,7 @@ import org.springframework.web.servlet.support.RequestContextUtils as RCU
 class PaginationTagLib {
 
 	static namespace = "bootstrap"
-	
+
 	def paginate = { attrs ->
         def writer = out
         if (attrs.total == null) {
@@ -51,7 +51,7 @@ class PaginationTagLib {
         int firststep = 1
         int laststep = Math.round(Math.ceil(total / max))
 
-		writer << '<ul>'
+		writer << '<ul class="pagination">'
 
         // display previous link when not on firststep
 		if (currentstep > firststep) {
@@ -62,7 +62,7 @@ class PaginationTagLib {
 			writer << '>'
 			def prevLinkAttrs = linkTagAttrs.clone()
 			prevLinkAttrs += [title: (attrs.prev ?: messageSource.getMessage('paginate.prev', null, messageSource.getMessage('default.paginate.prev', null, 'Previous', locale), locale))]
-			writer << link(prevLinkAttrs, '<i class="icon-chevron-left"></i>')
+			writer << link(prevLinkAttrs, '&laquo;<i class="icon-chevron-left"></i>')
 			writer << '</li>'
 		}
 
@@ -106,10 +106,10 @@ class PaginationTagLib {
 			writer << '>'
 			def nextLinkAttrs = linkTagAttrs.clone()
 			nextLinkAttrs += [title: (attrs.next ? attrs.next : messageSource.getMessage('paginate.next', null, messageSource.getMessage('default.paginate.next', null, 'Next', locale), locale))]
-			writer << link(nextLinkAttrs, '<i class="icon-chevron-right"></i>')
+			writer << link(nextLinkAttrs, '&raquo;')
 			writer << '</li>'
 		}
-		
+
 		writer << '</ul>'
 	}
 

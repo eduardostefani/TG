@@ -1,10 +1,13 @@
 <head>
 <meta name='layout' content='main' />
-<title><g:message code="springSecurity.denied.title" /></title>
+<title>Acesso Negado</title>
 </head>
 
 <body>
-<div class='body'>
-	<div class='errors'><g:message code="springSecurity.denied.message" /></div>
+<div id="appContent">
+	<div style="padding-top: 30px;">
+		<p style="font-weight: bold;">Desculpe, mas você não tem autorização para visualizar essa página.</p>
+		<a href="javascript:history.back();">Voltar</a>
+	</div>
 </div>
 </body>

@@ -1,5 +1,7 @@
 package scrumeasy.core.auth
 
+import scrumeasy.core.Task;
+
 class User {
 
 	transient springSecurityService
@@ -10,10 +12,13 @@ class User {
 	boolean accountExpired
 	boolean accountLocked
 	boolean passwordExpired
+	
+	static hasMany = [tasks : Task]
 
 	static constraints = {
 		username blank: false, unique: true
 		password blank: false
+		tasks nullable:true
 	}
 
 	static mapping = {

@@ -1,27 +1,77 @@
 package scrumeasy.core
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.util.StopWatch.TaskInfo;
 
-class TaskController {
+import scrumeasy.core.enuns.PRIORITY;
+import scrumeasy.core.enuns.STATUS;
+import grails.plugins.springsecurity.Secured;
 
-    static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
+
+class TaskController extends BaseController{
+
+	def springSecurityService
+    
+	static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST']]
 
     def index() {
         redirect action: 'list', params: params
     }
 
     def list() {
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        [taskInstanceList: Task.list(params), taskInstanceTotal: Task.count()]
+		
+		def user  = springSecurityService.currentUser
+		
+       /* params.max = Math.min(params.max ? params.int('max') : 10, 100)
+        [taskInstanceList: Task.list(params), taskInstanceTotal: Task.count()]*/
+		
+		log.info "* Method: list"
+		log.debug "* Params: ${params}"
+		println "* Method: list"
+		println "* Params: ${params}"
+
+		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+
+		def results = Task.createCriteria().list(max: params.max, offset: params.offset ?: 0) {
+			if (params['filter']) {
+				or {
+					ilike("name", "%${params.filter}%")
+					ilike("status", "%${params.filter}%")
+					ilike("priority", "%${params.filter}%")
+					ilike("description", "%${params.filter}%")
+				}
+			}
+
+			eq('user', user)
+
+			maxResults(params.max)
+
+			if (params.order) {
+				order(params.sort, params.order)
+			}
+		}
+
+		if (!isAjax(request)) {
+			[taskInstanceList: results, taskInstanceTotal: results.totalCount]
+		} else {
+			render(template: "list", model: [taskInstanceList: results, taskInstanceTotal: results.totalCount])
+		}
+		
+		
+		
     }
 
     def create() {
+		
+		def user  = springSecurityService.currentUser
+		
+		def taskInstance = new Task(params)
+		taskInstance.user = user
 		switch (request.method) {
 		case 'GET':
-        	[taskInstance: new Task(params)]
+        	[taskInstance: taskInstance]
 			break
 		case 'POST':
-	        def taskInstance = new Task(params)
 	        if (!taskInstance.save(flush: true)) {
 	            render view: 'create', model: [taskInstance: taskInstance]
 	            return
@@ -89,6 +139,10 @@ class TaskController {
     }
 
     def delete() {
+		
+		println "* Method: delete"
+		println "* Params: ${params}"
+		
         def taskInstance = Task.get(params.id)
         if (!taskInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'task.label', default: 'Task'), params.id])

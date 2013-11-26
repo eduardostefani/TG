@@ -3,70 +3,66 @@
 <!doctype html>
 <html>
 	<head>
-		<meta name="layout" content="bootstrap">
-		<g:set var="entityName" value="${message(code: 'task.label', default: 'Task')}" />
-		<title><g:message code="default.show.label" args="[entityName]" /></title>
+
+		<meta name="layout" content="main">
+		<g:set var="entityName"
+			value="${message(code: 'task.label', default: 'Task')}" />
+		<g:set var="entitiesName"
+			value="${message(code: 'task.label.plural', default: 'Task')}" />
+		<title>
+			<g:message code="default.show.label" args="[entityName]" />
+		</title>
+
 	</head>
 	<body>
-		<div class="row-fluid">
+
+		<bootstrap:header title="${message(code:'default.show.label', args:[entityName])}">
+
+			<sec:ifAllGranted roles="ROLE_TASK_ADD">
+				 <bootstrap:buttonCreate/>
+			</sec:ifAllGranted>
+
+			<sec:ifAllGranted roles="ROLE_TASK_DEL">
+				<bootstrap:buttonRemoveModal name="${entityName}" id="${taskInstance?.id}"/>
+			</sec:ifAllGranted>
+
+			<sec:ifAllGranted roles="ROLE_TASK_EDIT">
+				<bootstrap:buttonEdit id="${taskInstance?.id}"/>
+			</sec:ifAllGranted>
+
+			<bootstrap:buttonList/>
+
+		</bootstrap:header>
+
+		<g:if test="${flash.message}">
+			<bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+		</g:if>
+
+		<bootstrap:form title="${message(code:'task.form.legend', args:[entityName])}">
+
+			<dl class="dl-horizontal">
+
 			
-			<div class="span3">
-				<div class="well">
-					<ul class="nav nav-list">
-						<li class="nav-header">${entityName}</li>
-						<li>
-							<g:link class="list" action="list">
-								<i class="icon-list"></i>
-								<g:message code="default.list.label" args="[entityName]" />
-							</g:link>
-						</li>
-						<li>
-							<g:link class="create" action="create">
-								<i class="icon-plus"></i>
-								<g:message code="default.create.label" args="[entityName]" />
-							</g:link>
-						</li>
-					</ul>
-				</div>
-			</div>
+				<dt><g:message code="task.name.label" default="Name" />:</dt>
+				
+				<dd><g:fieldValue bean="${taskInstance}" field="name"/></dd>
+				
 			
-			<div class="span9">
-
-				<div class="page-header">
-					<h1><g:message code="default.show.label" args="[entityName]" /></h1>
-				</div>
-
-				<g:if test="${flash.message}">
-				<bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
-				</g:if>
-
-				<dl>
+				<dt><g:message code="task.priority.label" default="Priority" />:</dt>
 				
-					<g:if test="${taskInstance?.descricao}">
-						<dt><g:message code="task.descricao.label" default="Descricao" /></dt>
-						
-							<dd><g:fieldValue bean="${taskInstance}" field="descricao"/></dd>
-						
-					</g:if>
+				<dd><g:fieldValue bean="${taskInstance}" field="priority"/></dd>
 				
-				</dl>
+			
+				<dt><g:message code="task.status.label" default="Status" />:</dt>
+				
+				<dd><g:fieldValue bean="${taskInstance}" field="status"/></dd>
+				
+			
+				<dt><g:message code="task.description.label" default="Description" />:</dt>
+				
+				<dd><g:fieldValue bean="${taskInstance}" field="description"/></dd>
+			</dl>
+		</bootstrap:form>
 
-				<g:form>
-					<g:hiddenField name="id" value="${taskInstance?.id}" />
-					<div class="form-actions">
-						<g:link class="btn" action="edit" id="${taskInstance?.id}">
-							<i class="icon-pencil"></i>
-							<g:message code="default.button.edit.label" default="Edit" />
-						</g:link>
-						<button class="btn btn-danger" type="submit" name="_action_delete">
-							<i class="icon-trash icon-white"></i>
-							<g:message code="default.button.delete.label" default="Delete" />
-						</button>
-					</div>
-				</g:form>
-
-			</div>
-
-		</div>
 	</body>
 </html>
